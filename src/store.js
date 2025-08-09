@@ -1,12 +1,16 @@
-import { createStore } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import accountReducer from "./features/account/accountSlice";
+import customerReducer from "./features/customer/customerSlice";
+import { thunk } from "redux-thunk";
 
-const initialState = {
+/* 
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
 };
 
-function reducer(state = initialState, action) {
+function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     case "account/deposit":
       return { ...state, balance: state.balance + action.payload };
@@ -36,23 +40,7 @@ function reducer(state = initialState, action) {
   }
 }
 
-const store = createStore(reducer);
-
-// tests
-// store.dispatch({ type: "account/deposit", payload: 500 });
-// console.log(store.getState());
-
-// store.dispatch({ type: "account/withdraw", payload: 100 });
-// console.log(store.getState());
-
-// store.dispatch({
-//   type: "account/requestLoan",
-//   payload: { amount: 1200, purpose: "Buy a house" },
-// });
-// console.log(store.getState());
-
-// store.dispatch({ type: "account/payLoan" });
-// console.log(store.getState());
+const accountStore = createStore(accountReducer);
 
 function deposit(amount) {
   return { type: "account/deposit", payload: amount };
@@ -73,15 +61,49 @@ function payLoan() {
   return { type: "account/payLoan" };
 }
 
-// tests
-store.dispatch(deposit(800));
-console.log(store.getState());
+const initialStateCustomer = {
+  fullName: "",
+  nationalId: "",
+  createdAt: "",
+};
 
-store.dispatch(withdraw(100));
-console.log(store.getState());
+function createCustomer(fullName, nationalId) {
+  return {
+    type: "customer/createCustomer",
+    payload: { fullName, nationalId, createdAt: new Date().toISOString() },
+  };
+}
 
-store.dispatch(requestLoan(1000, "buy a house"));
-console.log(store.getState());
+function updateName(fullName) {
+  return { type: "customer/updateName", payload: fullName };
+}
 
-store.dispatch(payLoan());
-console.log(store.getState());
+function customerReducer(state = initialStateCustomer, action) {
+  switch (action.type) {
+    case "customer/createCustomer":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalId: action.payload.nationalId,
+        createdAt: action.payload.createdAt,
+      };
+
+    case "customer/updateName":
+      return { ...state, fullName: action.payload };
+
+    default:
+      return state;
+  }
+}
+
+const customerStore = createStore(customerReducer);
+ */
+
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
+
+export default store;
