@@ -90,11 +90,13 @@ function AccountOperations() {
         {account.loan > 0 && (
           <div>
             <p>
-              Loan amount {account.loan} for purpose:{" "}
+              Loan amount {account.loan} for purpose:
               <b>{account.loanPurpose}</b>
             </p>
             <span>Pay back {account.loan}</span>
-            <button onClick={handlePayLoan}>Pay loan</button>
+            <button onClick={handlePayLoan} disabled={account.isLoading}>
+              {account.isLoading ? "Converting" : "Pay loan"}
+            </button>
           </div>
         )}
       </div>
